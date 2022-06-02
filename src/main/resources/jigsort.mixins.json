@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.immortaldevs.jigsort.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "JigsawBlockEntityMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "SinglePoolElementMixin",
+    "StructurePoolGeneratorMixin",
+    "UpdateJigsawC2SPacketMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

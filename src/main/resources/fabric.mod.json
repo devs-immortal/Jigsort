@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "jigsort",
+  "version": "${version}",
+
+  "name": "Jigsort",
+  "description": "A few additions to jigsaw blocks",
+  "authors": [
+    "SollyW"
+  ],
+
+  "license": "CC0",
+  "icon": "assets/jigsort/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+  },
+
+  "mixins": [
+    "jigsort.mixins.json",
+    {
+      "config": "jigsort.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+
+  "depends": {
+    "fabric": "*",
+    "divine_intervention": "*",
+    "fabricloader": "*",
+    "minecraft": "*",
+    "java": ">=17"
+  }
+}

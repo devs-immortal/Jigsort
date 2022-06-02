@@ -1,0 +1,10 @@
+{
+  "jigsaw_block.conflict_mode": "Conflict",
+  "jigsaw_block.conflict_mode.default": "Default",
+  "jigsaw_block.conflict_mode.force": "Force",
+  "jigsaw_block.conflict_mode.ghost": "Ghost",
+  "jigsaw_block.conflict_mode.quick": "Quick",
+  "jigsaw_block.immediate_chance": "Immediate: %s%%",
+  "jigsaw_block.jigsort_joint_label": "Joint",
+  "jigsaw_block.priority": "Priority:"
+}
