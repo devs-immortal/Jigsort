@@ -2,20 +2,35 @@ package net.immortaldevs.jigsort.mixin;
 
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
 import net.immortaldevs.jigsort.JigsortJigsawBlockEntity;
+import net.immortaldevs.jigsort.JigsortStructureBlockBlockEntity;
 import net.immortaldevs.jigsort.JigsortUpdateJigsawC2SPacket;
+import net.immortaldevs.jigsort.JigsortUpdateStructureBlockC2SPacket;
 import net.minecraft.block.entity.JigsawBlockEntity;
+import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.network.packet.c2s.play.UpdateJigsawC2SPacket;
+import net.minecraft.network.packet.c2s.play.UpdateStructureBlockC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class ServerPlayNetworkHandlerMixin {
+    @ModifyOperand(method = "onUpdateStructureBlock",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/block/entity/StructureBlockBlockEntity;hasStructureName()Z",
+                    shift = At.Shift.BEFORE))
+    private static StructureBlockBlockEntity onUpdateStructureBlock(StructureBlockBlockEntity structureBlock,
+                                                                    UpdateStructureBlockC2SPacket packet) {
+        ((JigsortStructureBlockBlockEntity) structureBlock).setCustomBoundingBox(
+                ((JigsortUpdateStructureBlockC2SPacket) packet).getCustomBoundingBox());
+        return structureBlock;
+    }
+
     @ModifyOperand(method = "onUpdateJigsaw",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/block/entity/JigsawBlockEntity;markDirty()V",
                     shift = At.Shift.BEFORE))
-    private static JigsawBlockEntity updateJigsaw(JigsawBlockEntity jigsaw, UpdateJigsawC2SPacket packet) {
+    private static JigsawBlockEntity onUpdateJigsaw(JigsawBlockEntity jigsaw, UpdateJigsawC2SPacket packet) {
         JigsortUpdateJigsawC2SPacket jigsortPacket = ((JigsortUpdateJigsawC2SPacket) packet);
         JigsortJigsawBlockEntity jigsortJigsaw = ((JigsortJigsawBlockEntity) jigsaw);
 

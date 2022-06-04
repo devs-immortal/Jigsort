@@ -7,8 +7,12 @@
     "JigsawBlockEntityMixin",
     "ServerPlayNetworkHandlerMixin",
     "SinglePoolElementMixin",
+    "StructureAccessor",
+    "StructureBlockBlockEntityMixin",
+    "StructureMixin",
     "StructurePoolGeneratorMixin",
-    "UpdateJigsawC2SPacketMixin"
+    "UpdateJigsawC2SPacketMixin",
+    "UpdateStructureBlockC2SPacketMixin"
   ],
   "injectors": {
     "defaultRequire": 1
