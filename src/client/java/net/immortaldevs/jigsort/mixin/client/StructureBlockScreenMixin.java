@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static java.lang.Integer.parseInt;
-import static net.minecraft.util.math.MathHelper.clamp;
 
 @Mixin(StructureBlockScreen.class)
 public abstract class StructureBlockScreenMixin extends Screen {
@@ -176,9 +175,9 @@ public abstract class StructureBlockScreenMixin extends Screen {
             this.inputBoundingBoxMinX.setText(String.valueOf(box.getMinX()));
             this.inputBoundingBoxMinY.setText(String.valueOf(box.getMinY()));
             this.inputBoundingBoxMinZ.setText(String.valueOf(box.getMinZ()));
-            this.inputBoundingBoxSizeX.setText(String.valueOf(box.getMaxX() - box.getMinX()));
-            this.inputBoundingBoxSizeY.setText(String.valueOf(box.getMaxY() - box.getMinY()));
-            this.inputBoundingBoxSizeZ.setText(String.valueOf(box.getMaxZ() - box.getMinZ()));
+            this.inputBoundingBoxSizeX.setText(String.valueOf(box.getMaxX() - box.getMinX() + 1));
+            this.inputBoundingBoxSizeY.setText(String.valueOf(box.getMaxY() - box.getMinY() + 1));
+            this.inputBoundingBoxSizeZ.setText(String.valueOf(box.getMaxZ() - box.getMinZ() + 1));
         }
     }
 
@@ -226,16 +225,16 @@ public abstract class StructureBlockScreenMixin extends Screen {
                     shift = At.Shift.BEFORE))
     private UpdateStructureBlockC2SPacket updateStructureBlock(UpdateStructureBlockC2SPacket packet) {
         try {
-            int minX = clamp(parseInt(this.inputBoundingBoxMinX.getText()), -48, 48);
-            int minY = clamp(parseInt(this.inputBoundingBoxMinY.getText()), -48, 48);
-            int minZ = clamp(parseInt(this.inputBoundingBoxMinZ.getText()), -48, 48);
+            int minX = parseInt(this.inputBoundingBoxMinX.getText());
+            int minY = parseInt(this.inputBoundingBoxMinY.getText());
+            int minZ = parseInt(this.inputBoundingBoxMinZ.getText());
             ((JigsortUpdateStructureBlockC2SPacket) packet).setCustomBoundingBox(new BlockBox(
                     minX,
                     minY,
                     minZ,
-                    clamp(parseInt(this.inputBoundingBoxSizeX.getText()), 0, 48) + minX,
-                    clamp(parseInt(this.inputBoundingBoxSizeY.getText()), 0, 48) + minY,
-                    clamp(parseInt(this.inputBoundingBoxSizeZ.getText()), 0, 48) + minZ));
+                    parseInt(this.inputBoundingBoxSizeX.getText()) + minX - 1,
+                    parseInt(this.inputBoundingBoxSizeY.getText()) + minY - 1,
+                    parseInt(this.inputBoundingBoxSizeZ.getText()) + minZ - 1));
 
         } catch (NumberFormatException e) {
             ((JigsortUpdateStructureBlockC2SPacket) packet).setCustomBoundingBox(null);
