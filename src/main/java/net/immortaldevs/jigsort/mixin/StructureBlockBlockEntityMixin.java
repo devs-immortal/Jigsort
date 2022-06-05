@@ -40,8 +40,7 @@ public abstract class StructureBlockBlockEntityMixin implements JigsortStructure
     private void readNbt(NbtCompound nbt, CallbackInfo ci) {
         int[] customBoundingBox = nbt.getIntArray("customBoundingBox");
         if (customBoundingBox.length < 6) this.customBoundingBox = null;
-
-        this.customBoundingBox = new BlockBox(clamp(customBoundingBox[0], -48, 48),
+        else this.customBoundingBox = new BlockBox(clamp(customBoundingBox[0], -48, 48),
                 clamp(customBoundingBox[1], -48, 48),
                 clamp(customBoundingBox[2], -48, 48),
                 clamp(customBoundingBox[3], -48, 48),

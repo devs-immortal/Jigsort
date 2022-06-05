@@ -2,6 +2,7 @@ package net.immortaldevs.jigsort.mixin;
 
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
 import net.immortaldevs.jigsort.impl.JigsortStructure;
+import net.immortaldevs.jigsort.api.JigsortStructurePoolElement;
 import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.pool.SinglePoolElement;
@@ -11,8 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Comparator;
 import java.util.List;
@@ -21,9 +20,12 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 @Mixin(SinglePoolElement.class)
-public abstract class SinglePoolElementMixin {
+public abstract class SinglePoolElementMixin implements JigsortStructurePoolElement {
     @Shadow
     protected abstract Structure getStructure(StructureManager structureManager);
+
+    @Shadow
+    public abstract BlockBox getBoundingBox(StructureManager structureManager, BlockPos pos, BlockRotation rotation);
 
     @ModifyOperand(method = "getStructureBlockInfos",
             at = @At(value = "RETURN",
@@ -33,16 +35,10 @@ public abstract class SinglePoolElementMixin {
         return list;
     }
 
-    @Inject(method = "getBoundingBox",
-            at = @At("HEAD"),
-            cancellable = true)
-    private void getBoundingBox(StructureManager structureManager,
-                                BlockPos pos,
-                                BlockRotation rotation,
-                                CallbackInfoReturnable<BlockBox> cir) {
-        Structure structure = this.getStructure(structureManager);
-        BlockBox boundingBox = ((JigsortStructure) structure).getCustomBoundingBox();
-        if (boundingBox == null) return;
+    @Override
+    public BlockBox getCustomBoundingBox(StructureManager structureManager, BlockPos pos, BlockRotation rotation) {
+        BlockBox boundingBox = ((JigsortStructure) this.getStructure(structureManager)).getCustomBoundingBox();
+        if (boundingBox == null) return this.getBoundingBox(structureManager, pos, rotation);
 
         int minX = boundingBox.getMinX(), minY = boundingBox.getMinY(), minZ = boundingBox.getMinZ();
         int maxX = boundingBox.getMaxX(), maxY = boundingBox.getMaxY(), maxZ = boundingBox.getMaxZ();
@@ -70,12 +66,12 @@ public abstract class SinglePoolElementMixin {
             }
         }
 
-        cir.setReturnValue(new BlockBox(
+        return new BlockBox(
                 min(minX, maxX) + pos.getX(),
                 min(minY, maxY) + pos.getY(),
                 min(minZ, maxZ) + pos.getZ(),
                 max(minX, maxX) + pos.getX(),
                 max(minY, maxY) + pos.getY(),
-                max(minZ, maxZ) + pos.getZ()));
+                max(minZ, maxZ) + pos.getZ());
     }
 }

@@ -1,14 +1,16 @@
 package net.immortaldevs.jigsort.api;
 
-import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.structure.StructureManager;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
 
-@SuppressWarnings("unused")
 public interface JigsortStructurePoolElement {
-    default int getPriority() {
-        throw new NoSuchMethodError();
+    default BlockBox getCustomBoundingBox(StructureManager structureManager, BlockPos pos, BlockRotation rotation) {
+        throw new Error();
     }
 
-    default StructurePoolElement setPriority(int priority) {
-        throw new NoSuchMethodError();
+    default int getPriority() {
+        throw new Error();
     }
 }

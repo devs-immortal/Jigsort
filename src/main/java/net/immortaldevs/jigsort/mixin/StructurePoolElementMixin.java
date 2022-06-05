@@ -1,23 +1,26 @@
 package net.immortaldevs.jigsort.mixin;
 
 import net.immortaldevs.jigsort.api.JigsortStructurePoolElement;
+import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(StructurePoolElement.class)
 public abstract class StructurePoolElementMixin implements JigsortStructurePoolElement {
-    @Unique
-    private int priority = 0;
+    @Shadow
+    public abstract BlockBox getBoundingBox(StructureManager var1, BlockPos var2, BlockRotation var3);
 
     @Override
-    public int getPriority() {
-        return this.priority;
+    public BlockBox getCustomBoundingBox(StructureManager structureManager, BlockPos pos, BlockRotation rotation) {
+        return this.getBoundingBox(structureManager, pos, rotation);
     }
 
     @Override
-    public StructurePoolElement setPriority(int priority) {
-        this.priority = priority;
-        return (StructurePoolElement) (Object) this;
+    public int getPriority() {
+        return 0;
     }
 }

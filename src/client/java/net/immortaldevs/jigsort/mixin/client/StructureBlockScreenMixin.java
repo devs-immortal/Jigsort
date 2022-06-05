@@ -8,13 +8,15 @@ import net.minecraft.block.enums.StructureBlockMode;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.StructureBlockScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.UpdateStructureBlockC2SPacket;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.BlockMirror;
 import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.MathHelper;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,13 +25,29 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.ToIntFunction;
+import static java.lang.Integer.parseInt;
+import static net.minecraft.util.math.MathHelper.clamp;
 
 @Mixin(StructureBlockScreen.class)
 public abstract class StructureBlockScreenMixin extends Screen {
     @Shadow
     @Final
     private StructureBlockBlockEntity structureBlock;
+
+    @Shadow
+    private CyclingButtonWidget<BlockMirror> buttonMirror;
+
+    @Shadow
+    private ButtonWidget buttonRotate0;
+
+    @Shadow
+    private ButtonWidget buttonRotate90;
+
+    @Shadow
+    private ButtonWidget buttonRotate180;
+
+    @Shadow
+    private ButtonWidget buttonRotate270;
 
     @Unique
     private static final Text BB_MIN_X_TEXT = new TranslatableText("structure_block.custom_bounding_box.min_x");
@@ -41,13 +59,13 @@ public abstract class StructureBlockScreenMixin extends Screen {
     private static final Text BB_MIN_Z_TEXT = new TranslatableText("structure_block.custom_bounding_box.min_z");
 
     @Unique
-    private static final Text BB_MAX_X_TEXT = new TranslatableText("structure_block.custom_bounding_box.max_x");
+    private static final Text BB_SIZE_X_TEXT = new TranslatableText("structure_block.custom_bounding_box.size_x");
 
     @Unique
-    private static final Text BB_MAX_Y_TEXT = new TranslatableText("structure_block.custom_bounding_box.max_y");
+    private static final Text BB_SIZE_Y_TEXT = new TranslatableText("structure_block.custom_bounding_box.size_y");
 
     @Unique
-    private static final Text BB_MAX_Z_TEXT = new TranslatableText("structure_block.custom_bounding_box.max_z");
+    private static final Text BB_SIZE_Z_TEXT = new TranslatableText("structure_block.custom_bounding_box.size_z");
 
     @Unique
     private TextFieldWidget inputBoundingBoxMinX;
@@ -59,13 +77,13 @@ public abstract class StructureBlockScreenMixin extends Screen {
     private TextFieldWidget inputBoundingBoxMinZ;
 
     @Unique
-    private TextFieldWidget inputBoundingBoxMaxX;
+    private TextFieldWidget inputBoundingBoxSizeX;
 
     @Unique
-    private TextFieldWidget inputBoundingBoxMaxY;
+    private TextFieldWidget inputBoundingBoxSizeY;
 
     @Unique
-    private TextFieldWidget inputBoundingBoxMaxZ;
+    private TextFieldWidget inputBoundingBoxSizeZ;
 
     private StructureBlockScreenMixin(Text title) {
         super(title);
@@ -77,9 +95,9 @@ public abstract class StructureBlockScreenMixin extends Screen {
         this.inputBoundingBoxMinX.tick();
         this.inputBoundingBoxMinY.tick();
         this.inputBoundingBoxMinZ.tick();
-        this.inputBoundingBoxMaxX.tick();
-        this.inputBoundingBoxMaxY.tick();
-        this.inputBoundingBoxMaxZ.tick();
+        this.inputBoundingBoxSizeX.tick();
+        this.inputBoundingBoxSizeY.tick();
+        this.inputBoundingBoxSizeZ.tick();
     }
 
     @Inject(method = "init",
@@ -95,7 +113,7 @@ public abstract class StructureBlockScreenMixin extends Screen {
                 BB_MIN_X_TEXT);
 
         this.inputBoundingBoxMinX.setMaxLength(15);
-        this.inputBoundingBoxMinX.setText(this.getInitialText(BlockBox::getMinX));
+        this.inputBoundingBoxMinX.setText("~");
         this.addSelectableChild(this.inputBoundingBoxMinX);
 
         this.inputBoundingBoxMinY = new TextFieldWidget(this.textRenderer,
@@ -106,7 +124,7 @@ public abstract class StructureBlockScreenMixin extends Screen {
                 BB_MIN_Y_TEXT);
 
         this.inputBoundingBoxMinY.setMaxLength(15);
-        this.inputBoundingBoxMinY.setText(this.getInitialText(BlockBox::getMinY));
+        this.inputBoundingBoxMinY.setText("~");
         this.addSelectableChild(this.inputBoundingBoxMinY);
 
         this.inputBoundingBoxMinZ = new TextFieldWidget(this.textRenderer,
@@ -117,60 +135,70 @@ public abstract class StructureBlockScreenMixin extends Screen {
                 BB_MIN_Z_TEXT);
 
         this.inputBoundingBoxMinZ.setMaxLength(15);
-        this.inputBoundingBoxMinZ.setText(this.getInitialText(BlockBox::getMinZ));
+        this.inputBoundingBoxMinZ.setText("~");
         this.addSelectableChild(this.inputBoundingBoxMinZ);
 
-        this.inputBoundingBoxMaxX = new TextFieldWidget(this.textRenderer,
+        this.inputBoundingBoxSizeX = new TextFieldWidget(this.textRenderer,
                 this.width / 2 - 32,
                 120,
                 40,
                 20,
-                BB_MAX_X_TEXT);
+                BB_SIZE_X_TEXT);
 
-        this.inputBoundingBoxMaxX.setMaxLength(15);
-        this.inputBoundingBoxMaxX.setText(this.getInitialText(BlockBox::getMaxX));
-        this.addSelectableChild(this.inputBoundingBoxMaxX);
+        this.inputBoundingBoxSizeX.setMaxLength(15);
+        this.inputBoundingBoxSizeX.setText("~");
+        this.addSelectableChild(this.inputBoundingBoxSizeX);
 
-        this.inputBoundingBoxMaxY = new TextFieldWidget(this.textRenderer,
+        this.inputBoundingBoxSizeY = new TextFieldWidget(this.textRenderer,
                 this.width / 2 + 8,
                 120,
                 40,
                 20,
-                BB_MAX_Y_TEXT);
+                BB_SIZE_Y_TEXT);
 
-        this.inputBoundingBoxMaxY.setMaxLength(15);
-        this.inputBoundingBoxMaxY.setText(this.getInitialText(BlockBox::getMaxY));
-        this.addSelectableChild(this.inputBoundingBoxMaxY);
+        this.inputBoundingBoxSizeY.setMaxLength(15);
+        this.inputBoundingBoxSizeY.setText("~");
+        this.addSelectableChild(this.inputBoundingBoxSizeY);
 
-        this.inputBoundingBoxMaxZ = new TextFieldWidget(this.textRenderer,
+        this.inputBoundingBoxSizeZ = new TextFieldWidget(this.textRenderer,
                 this.width / 2 + 48,
                 120,
                 40,
                 20,
-                BB_MAX_Z_TEXT);
+                BB_SIZE_Z_TEXT);
 
-        this.inputBoundingBoxMaxZ.setMaxLength(15);
-        this.inputBoundingBoxMaxZ.setText(this.getInitialText(BlockBox::getMaxZ));
-        this.addSelectableChild(this.inputBoundingBoxMaxZ);
+        this.inputBoundingBoxSizeZ.setMaxLength(15);
+        this.inputBoundingBoxSizeZ.setText("~");
+        this.addSelectableChild(this.inputBoundingBoxSizeZ);
+
+        BlockBox box = ((JigsortStructureBlockBlockEntity) this.structureBlock).getCustomBoundingBox();
+        if (box != null) {
+            this.inputBoundingBoxMinX.setText(String.valueOf(box.getMinX()));
+            this.inputBoundingBoxMinY.setText(String.valueOf(box.getMinY()));
+            this.inputBoundingBoxMinZ.setText(String.valueOf(box.getMinZ()));
+            this.inputBoundingBoxSizeX.setText(String.valueOf(box.getMaxX() - box.getMinX()));
+            this.inputBoundingBoxSizeY.setText(String.valueOf(box.getMaxY() - box.getMinY()));
+            this.inputBoundingBoxSizeZ.setText(String.valueOf(box.getMaxZ() - box.getMinZ()));
+        }
     }
 
     @Redirect(method = "resize",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/screen/ingame/StructureBlockScreen;init(Lnet/minecraft/client/MinecraftClient;II)V"))
     private void init(StructureBlockScreen instance, MinecraftClient client, int width, int height) {
-        String conflictPosXText = this.inputBoundingBoxMinX.getText();
-        String conflictPosYText = this.inputBoundingBoxMinY.getText();
-        String conflictPosZText = this.inputBoundingBoxMinZ.getText();
-        String conflictSizeXText = this.inputBoundingBoxMaxX.getText();
-        String conflictSizeYText = this.inputBoundingBoxMaxY.getText();
-        String conflictSizeZText = this.inputBoundingBoxMaxZ.getText();
+        String minXText = this.inputBoundingBoxMinX.getText();
+        String minYText = this.inputBoundingBoxMinY.getText();
+        String minZText = this.inputBoundingBoxMinZ.getText();
+        String sizeXText = this.inputBoundingBoxSizeX.getText();
+        String sizeYText = this.inputBoundingBoxSizeY.getText();
+        String sizeZText = this.inputBoundingBoxSizeZ.getText();
         instance.init(client, width, height);
-        this.inputBoundingBoxMinX.setText(conflictPosXText);
-        this.inputBoundingBoxMinY.setText(conflictPosYText);
-        this.inputBoundingBoxMinZ.setText(conflictPosZText);
-        this.inputBoundingBoxMaxX.setText(conflictSizeXText);
-        this.inputBoundingBoxMaxY.setText(conflictSizeYText);
-        this.inputBoundingBoxMaxZ.setText(conflictSizeZText);
+        this.inputBoundingBoxMinX.setText(minXText);
+        this.inputBoundingBoxMinY.setText(minYText);
+        this.inputBoundingBoxMinZ.setText(minZText);
+        this.inputBoundingBoxSizeX.setText(sizeXText);
+        this.inputBoundingBoxSizeY.setText(sizeYText);
+        this.inputBoundingBoxSizeZ.setText(sizeZText);
     }
 
     @Inject(method = "updateWidgets",
@@ -180,9 +208,16 @@ public abstract class StructureBlockScreenMixin extends Screen {
         this.inputBoundingBoxMinX.setVisible(visible);
         this.inputBoundingBoxMinY.setVisible(visible);
         this.inputBoundingBoxMinZ.setVisible(visible);
-        this.inputBoundingBoxMaxX.setVisible(visible);
-        this.inputBoundingBoxMaxY.setVisible(visible);
-        this.inputBoundingBoxMaxZ.setVisible(visible);
+        this.inputBoundingBoxSizeX.setVisible(visible);
+        this.inputBoundingBoxSizeY.setVisible(visible);
+        this.inputBoundingBoxSizeZ.setVisible(visible);
+        if (visible) {
+            this.buttonMirror.visible = true;
+            this.buttonRotate0.visible = true;
+            this.buttonRotate90.visible = true;
+            this.buttonRotate180.visible = true;
+            this.buttonRotate270.visible = true;
+        }
     }
 
     @ModifyOperand(method = "updateStructureBlock",
@@ -191,13 +226,17 @@ public abstract class StructureBlockScreenMixin extends Screen {
                     shift = At.Shift.BEFORE))
     private UpdateStructureBlockC2SPacket updateStructureBlock(UpdateStructureBlockC2SPacket packet) {
         try {
+            int minX = clamp(parseInt(this.inputBoundingBoxMinX.getText()), -48, 48);
+            int minY = clamp(parseInt(this.inputBoundingBoxMinY.getText()), -48, 48);
+            int minZ = clamp(parseInt(this.inputBoundingBoxMinZ.getText()), -48, 48);
             ((JigsortUpdateStructureBlockC2SPacket) packet).setCustomBoundingBox(new BlockBox(
-                    getValue(this.inputBoundingBoxMinX),
-                    getValue(this.inputBoundingBoxMinY),
-                    getValue(this.inputBoundingBoxMinZ),
-                    getValue(this.inputBoundingBoxMaxX),
-                    getValue(this.inputBoundingBoxMaxY),
-                    getValue(this.inputBoundingBoxMaxZ)));
+                    minX,
+                    minY,
+                    minZ,
+                    clamp(parseInt(this.inputBoundingBoxSizeX.getText()), 0, 48) + minX,
+                    clamp(parseInt(this.inputBoundingBoxSizeY.getText()), 0, 48) + minY,
+                    clamp(parseInt(this.inputBoundingBoxSizeZ.getText()), 0, 48) + minZ));
+
         } catch (NumberFormatException e) {
             ((JigsortUpdateStructureBlockC2SPacket) packet).setCustomBoundingBox(null);
         }
@@ -213,9 +252,9 @@ public abstract class StructureBlockScreenMixin extends Screen {
         this.inputBoundingBoxMinX.render(matrices, mouseX, mouseY, delta);
         this.inputBoundingBoxMinY.render(matrices, mouseX, mouseY, delta);
         this.inputBoundingBoxMinZ.render(matrices, mouseX, mouseY, delta);
-        this.inputBoundingBoxMaxX.render(matrices, mouseX, mouseY, delta);
-        this.inputBoundingBoxMaxY.render(matrices, mouseX, mouseY, delta);
-        this.inputBoundingBoxMaxZ.render(matrices, mouseX, mouseY, delta);
+        this.inputBoundingBoxSizeX.render(matrices, mouseX, mouseY, delta);
+        this.inputBoundingBoxSizeY.render(matrices, mouseX, mouseY, delta);
+        this.inputBoundingBoxSizeZ.render(matrices, mouseX, mouseY, delta);
     }
 
     @ModifyConstant(method = "init",
@@ -255,18 +294,5 @@ public abstract class StructureBlockScreenMixin extends Screen {
             allow = 6)
     private int resize(int width) {
         return 40;
-    }
-
-    @Unique
-    private String getInitialText(ToIntFunction<BlockBox> getter) {
-        JigsortStructureBlockBlockEntity structureBlock = (JigsortStructureBlockBlockEntity) this.structureBlock;
-        return structureBlock.getCustomBoundingBox() == null
-                ? "~"
-                : String.valueOf(getter.applyAsInt(structureBlock.getCustomBoundingBox()));
-    }
-
-    @Unique
-    private static int getValue(TextFieldWidget textField) throws NumberFormatException {
-        return MathHelper.clamp(Integer.parseInt(textField.getText()), -48, 48);
     }
 }

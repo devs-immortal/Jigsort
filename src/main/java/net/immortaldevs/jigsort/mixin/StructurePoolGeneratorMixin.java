@@ -3,6 +3,11 @@ package net.immortaldevs.jigsort.mixin;
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
 import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity.ConflictMode;
 import net.minecraft.structure.Structure;
+import net.minecraft.structure.StructureManager;
+import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -67,5 +72,15 @@ public abstract class StructurePoolGeneratorMixin {
         if (this.random.nextInt(100) < this.info.nbt.getInt("immediate_chance")) {
             instance.addFirst(e);
         } else instance.addLast(e);
+    }
+
+    @Redirect(method = "generatePiece",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/structure/pool/StructurePoolElement;getBoundingBox(Lnet/minecraft/structure/StructureManager;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/BlockRotation;)Lnet/minecraft/util/math/BlockBox;"))
+    private BlockBox getBoundingBox(StructurePoolElement instance,
+                                    StructureManager structureManager,
+                                    BlockPos blockPos,
+                                    BlockRotation blockRotation) {
+        return instance.getCustomBoundingBox(structureManager, blockPos, blockRotation);
     }
 }
