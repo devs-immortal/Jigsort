@@ -1,14 +1,14 @@
 package net.immortaldevs.jigsort.api;
 
-import org.apache.commons.lang3.NotImplementedException;
+import net.minecraft.structure.pool.StructurePoolElement;
 
 @SuppressWarnings("unused")
 public interface JigsortStructurePoolElement {
     default int getPriority() {
-        throw new NotImplementedException();
+        throw new NoSuchMethodError();
     }
 
-    default void setPriority(int priority) {
-        throw new NotImplementedException();
+    default StructurePoolElement setPriority(int priority) {
+        throw new NoSuchMethodError();
     }
 }

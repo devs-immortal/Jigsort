@@ -16,7 +16,8 @@ public abstract class StructurePoolElementMixin implements JigsortStructurePoolE
     }
 
     @Override
-    public void setPriority(int priority) {
+    public StructurePoolElement setPriority(int priority) {
         this.priority = priority;
+        return (StructurePoolElement) (Object) this;
     }
 }
