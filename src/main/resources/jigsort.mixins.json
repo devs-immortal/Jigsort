@@ -9,7 +9,8 @@
     "SinglePoolElementMixin",
     "StructureBlockBlockEntityMixin",
     "StructureMixin",
-    "StructurePoolAccessor",
+    "StructurePoolMixin",
+    "StructurePoolElementMixin",
     "StructurePoolGeneratorMixin",
     "UpdateJigsawC2SPacketMixin",
     "UpdateStructureBlockC2SPacketMixin"

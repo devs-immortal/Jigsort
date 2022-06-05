@@ -1,6 +1,6 @@
-package net.immortaldevs.jigsort;
+package net.immortaldevs.jigsort.impl;
 
-import net.immortaldevs.jigsort.JigsortJigsawBlockEntity.ConflictMode;
+import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity.ConflictMode;
 
 public interface JigsortUpdateJigsawC2SPacket {
     int getImmediateChance();

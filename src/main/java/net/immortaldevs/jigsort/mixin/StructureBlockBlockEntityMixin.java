@@ -1,7 +1,7 @@
 package net.immortaldevs.jigsort.mixin;
 
-import net.immortaldevs.jigsort.JigsortStructure;
-import net.immortaldevs.jigsort.JigsortStructureBlockBlockEntity;
+import net.immortaldevs.jigsort.impl.JigsortStructure;
+import net.immortaldevs.jigsort.impl.JigsortStructureBlockBlockEntity;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.Structure;

@@ -1,6 +1,6 @@
 package net.immortaldevs.jigsort.mixin.client;
 
-import net.immortaldevs.jigsort.JigsortStructureBlockBlockEntity;
+import net.immortaldevs.jigsort.impl.JigsortStructureBlockBlockEntity;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.block.enums.StructureBlockMode;
 import net.minecraft.client.render.RenderLayer;

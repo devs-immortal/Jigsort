@@ -1,9 +1,9 @@
 package net.immortaldevs.jigsort.mixin.client;
 
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
-import net.immortaldevs.jigsort.JigsortJigsawBlockEntity;
-import net.immortaldevs.jigsort.JigsortJigsawBlockEntity.ConflictMode;
-import net.immortaldevs.jigsort.JigsortUpdateJigsawC2SPacket;
+import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity;
+import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity.ConflictMode;
+import net.immortaldevs.jigsort.impl.JigsortUpdateJigsawC2SPacket;
 import net.minecraft.block.entity.JigsawBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

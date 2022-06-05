@@ -1,7 +1,7 @@
 package net.immortaldevs.jigsort.mixin;
 
-import net.immortaldevs.jigsort.JigsortJigsawBlockEntity.ConflictMode;
-import net.immortaldevs.jigsort.JigsortUpdateJigsawC2SPacket;
+import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity.ConflictMode;
+import net.immortaldevs.jigsort.impl.JigsortUpdateJigsawC2SPacket;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.UpdateJigsawC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;

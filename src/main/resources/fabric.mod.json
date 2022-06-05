@@ -30,5 +30,11 @@
     "fabricloader": "*",
     "minecraft": "*",
     "java": ">=17"
+  },
+
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_3784": ["net/immortaldevs/jigsort/api/JigsortStructurePoolElement"]
+    }
   }
 }

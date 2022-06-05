@@ -1,6 +1,6 @@
 package net.immortaldevs.jigsort.mixin;
 
-import net.immortaldevs.jigsort.JigsortJigsawBlockEntity;
+import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity;
 import net.minecraft.block.entity.JigsawBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;

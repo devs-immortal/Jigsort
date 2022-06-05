@@ -1,6 +1,6 @@
 package net.immortaldevs.jigsort.mixin;
 
-import net.immortaldevs.jigsort.JigsortUpdateStructureBlockC2SPacket;
+import net.immortaldevs.jigsort.impl.JigsortUpdateStructureBlockC2SPacket;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.UpdateStructureBlockC2SPacket;
 import net.minecraft.util.math.BlockBox;

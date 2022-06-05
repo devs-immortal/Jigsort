@@ -1,7 +1,7 @@
 package net.immortaldevs.jigsort.mixin;
 
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
-import net.immortaldevs.jigsort.JigsortJigsawBlockEntity.ConflictMode;
+import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity.ConflictMode;
 import net.minecraft.structure.Structure;
 import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Final;

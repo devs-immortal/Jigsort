@@ -1,6 +1,6 @@
 package net.immortaldevs.jigsort.mixin;
 
-import net.immortaldevs.jigsort.JigsortStructure;
+import net.immortaldevs.jigsort.impl.JigsortStructure;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.Structure;
 import net.minecraft.util.math.BlockBox;

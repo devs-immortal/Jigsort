@@ -1,4 +1,4 @@
-package net.immortaldevs.jigsort;
+package net.immortaldevs.jigsort.impl;
 
 import net.minecraft.util.math.BlockBox;
 

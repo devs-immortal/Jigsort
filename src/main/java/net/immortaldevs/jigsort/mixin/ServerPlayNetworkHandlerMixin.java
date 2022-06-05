@@ -1,10 +1,10 @@
 package net.immortaldevs.jigsort.mixin;
 
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
-import net.immortaldevs.jigsort.JigsortJigsawBlockEntity;
-import net.immortaldevs.jigsort.JigsortStructureBlockBlockEntity;
-import net.immortaldevs.jigsort.JigsortUpdateJigsawC2SPacket;
-import net.immortaldevs.jigsort.JigsortUpdateStructureBlockC2SPacket;
+import net.immortaldevs.jigsort.impl.JigsortJigsawBlockEntity;
+import net.immortaldevs.jigsort.impl.JigsortStructureBlockBlockEntity;
+import net.immortaldevs.jigsort.impl.JigsortUpdateJigsawC2SPacket;
+import net.immortaldevs.jigsort.impl.JigsortUpdateStructureBlockC2SPacket;
 import net.minecraft.block.entity.JigsawBlockEntity;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.network.packet.c2s.play.UpdateJigsawC2SPacket;

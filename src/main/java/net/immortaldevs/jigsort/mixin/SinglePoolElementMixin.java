@@ -1,7 +1,7 @@
 package net.immortaldevs.jigsort.mixin;
 
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
-import net.immortaldevs.jigsort.JigsortStructure;
+import net.immortaldevs.jigsort.impl.JigsortStructure;
 import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.pool.SinglePoolElement;

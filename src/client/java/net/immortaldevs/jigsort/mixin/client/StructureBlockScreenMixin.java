@@ -1,8 +1,8 @@
 package net.immortaldevs.jigsort.mixin.client;
 
 import net.immortaldevs.divineintervention.injection.ModifyOperand;
-import net.immortaldevs.jigsort.JigsortStructureBlockBlockEntity;
-import net.immortaldevs.jigsort.JigsortUpdateStructureBlockC2SPacket;
+import net.immortaldevs.jigsort.impl.JigsortStructureBlockBlockEntity;
+import net.immortaldevs.jigsort.impl.JigsortUpdateStructureBlockC2SPacket;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.block.enums.StructureBlockMode;
 import net.minecraft.client.MinecraftClient;
