@@ -5,14 +5,15 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "JigsawBlockEntityMixin",
+    "JigsawStructureMixin",
     "ListPoolElementMixin",
     "ServerPlayNetworkHandlerMixin",
     "SinglePoolElementMixin",
     "StructureBlockBlockEntityMixin",
-    "StructureTemplateMixin",
     "StructurePoolElementMixin",
     "StructurePoolGeneratorMixin",
     "StructurePoolMixin",
+    "StructureTemplateMixin",
     "UpdateJigsawC2SPacketMixin",
     "UpdateStructureBlockC2SPacketMixin"
   ],
