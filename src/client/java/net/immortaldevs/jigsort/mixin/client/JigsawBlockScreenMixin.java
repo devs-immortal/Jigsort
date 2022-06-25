@@ -9,13 +9,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.JigsawBlockScreen;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.UpdateJigsawC2SPacket;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -35,19 +32,34 @@ public abstract class JigsawBlockScreenMixin extends Screen {
     protected abstract void updateDoneButtonState();
 
     @Unique
-    private static final Text PRIORITY_TEXT = new TranslatableText("jigsaw_block.priority");
+    private static final Text PRIORITY_TEXT = Text.translatable("jigsaw_block.priority");
 
     @Unique
-    private static final Text CONFLICT_MODE_TEXT = new TranslatableText("jigsaw_block.conflict_mode");
+    private static final Text IMMEDIATE_CHANCE_TEXT = Text.translatable("jigsaw_block.immediate_chance");
+
+    @Unique
+    private static final Text PERCENT_TEXT = Text.literal("%");
+
+    @Unique
+    private static final Text UNUSED_TEXT = Text.literal("WIP");
+
+    @Unique
+    private static final Text CONFLICT_MODE_TEXT = Text.translatable("jigsaw_block.conflict_mode");
 
     @Unique
     private TextFieldWidget priorityField;
 
     @Unique
+    private TextFieldWidget immediateChanceField;
+
+    @Unique
+    private TextFieldWidget unusedField;
+
+    @Unique
     private CyclingButtonWidget<ConflictMode> conflictModeButton;
 
     @Unique
-    private double immediateChance = 0.0;
+    private CyclingButtonWidget<Boolean> unusedButton;
 
     private JigsawBlockScreenMixin(Text title) {
         super(title);
@@ -56,7 +68,7 @@ public abstract class JigsawBlockScreenMixin extends Screen {
     @Inject(method = "<clinit>",
             at = @At("TAIL"))
     private static void clinit(CallbackInfo ci) {
-        JOINT_LABEL_TEXT = new TranslatableText("jigsaw_block.jigsort_joint_label");
+        JOINT_LABEL_TEXT = Text.translatable("jigsaw_block.jigsort_joint_label");
     }
 
     @Inject(method = "tick",
@@ -67,12 +79,11 @@ public abstract class JigsawBlockScreenMixin extends Screen {
 
     @ModifyOperand(method = "updateServer",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
-                    shift = At.Shift.BEFORE))
+                    target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"))
     private UpdateJigsawC2SPacket updateServer(UpdateJigsawC2SPacket packet) {
         JigsortUpdateJigsawC2SPacket jigsortPacket = ((JigsortUpdateJigsawC2SPacket) packet);
-        jigsortPacket.setImmediateChance((int) Math.round(this.immediateChance * 100.0));
         jigsortPacket.setPriority(parseInt(this.priorityField.getText()));
+        jigsortPacket.setImmediateChance(parseInt(this.immediateChanceField.getText()));
         jigsortPacket.setConflictMode(this.conflictModeButton.getValue());
         return packet;
     }
@@ -86,42 +97,43 @@ public abstract class JigsawBlockScreenMixin extends Screen {
         this.priorityField = new TextFieldWidget(this.textRenderer,
                 this.width / 2 - 152,
                 160,
-                300,
+                100,
                 20,
                 PRIORITY_TEXT);
-
         this.priorityField.setMaxLength(9);
         this.priorityField.setText(String.valueOf(jigsortJigsaw.getPriority()));
-        this.priorityField.setChangedListener(name -> this.updateDoneButtonState());
+        this.priorityField.setChangedListener(text -> this.updateDoneButtonState());
         this.addSelectableChild(this.priorityField);
+
+        this.immediateChanceField = new TextFieldWidget(this.textRenderer,
+                this.width / 2 - 52,
+                160,
+                100,
+                20,
+                IMMEDIATE_CHANCE_TEXT);
+        this.immediateChanceField.setMaxLength(9);
+        this.immediateChanceField.setText(String.valueOf(jigsortJigsaw.getImmediateChance()));
+        this.immediateChanceField.setChangedListener(text -> this.updateDoneButtonState());
+        this.addSelectableChild(this.immediateChanceField);
+
+        this.unusedField = new TextFieldWidget(this.textRenderer,
+                this.width / 2 + 48,
+                160,
+                100,
+                20,
+                UNUSED_TEXT);
+        this.unusedField.active = false;
+        this.addSelectableChild(this.immediateChanceField);
+
+        this.unusedButton = this.addDrawableChild(
+                CyclingButtonWidget.onOffBuilder(false)
+                        .build(this.width / 2 - 50, 185, 100, 20, UNUSED_TEXT));
+        this.unusedButton.active = false;
 
         this.conflictModeButton = this.addDrawableChild(CyclingButtonWidget.builder(ConflictMode::asText)
                 .values(ConflictMode.values())
                 .initially(jigsortJigsaw.getConflictMode())
                 .build(this.width / 2 + 54, 185, 100, 20, CONFLICT_MODE_TEXT));
-
-        this.addDrawableChild(new SliderWidget(this.width / 2 - 50,
-                185,
-                100,
-                20,
-                LiteralText.EMPTY,
-                jigsortJigsaw.getImmediateChance() / 100.0) {
-            {
-                this.updateMessage();
-                this.applyValue();
-            }
-
-            @Override
-            protected void updateMessage() {
-                this.setMessage(new TranslatableText("jigsaw_block.immediate_chance",
-                        Math.round(this.value * 100.0)));
-            }
-
-            @Override
-            protected void applyValue() {
-                JigsawBlockScreenMixin.this.immediateChance = this.value;
-            }
-        });
     }
 
     @ModifyOperand(method = "updateDoneButtonState",
@@ -129,12 +141,14 @@ public abstract class JigsawBlockScreenMixin extends Screen {
                     from = @At(value = "FIELD",
                             target = "Lnet/minecraft/client/gui/screen/ingame/JigsawBlockScreen;poolField:Lnet/minecraft/client/gui/widget/TextFieldWidget;")),
             at = @At(value = "INVOKE",
+                    shift = At.Shift.AFTER,
                     target = "Lnet/minecraft/util/Identifier;isValid(Ljava/lang/String;)Z",
                     ordinal = 0))
     private boolean updateDoneButtonState(boolean valid) {
         if (!valid) return false;
         try {
             Integer.parseInt(this.priorityField.getText());
+            Integer.parseInt(this.immediateChanceField.getText());
             return true;
         } catch (NumberFormatException ignored) {
             return false;
@@ -145,12 +159,16 @@ public abstract class JigsawBlockScreenMixin extends Screen {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/screen/ingame/JigsawBlockScreen;init(Lnet/minecraft/client/MinecraftClient;II)V"))
     private void init(JigsawBlockScreen instance, MinecraftClient client, int width, int height) {
-        double immediateChance = this.immediateChance;
         String priority = this.priorityField.getText();
+        String immediateChance = this.immediateChanceField.getText();
+        String unused = this.unusedField.getText();
+        Boolean unused0 = this.unusedButton.getValue();
         ConflictMode mode = this.conflictModeButton.getValue();
         instance.init(client, width, height);
-        this.immediateChance = immediateChance;
         this.priorityField.setText(priority);
+        this.immediateChanceField.setText(immediateChance);
+        this.unusedField.setText(unused);
+        this.unusedButton.setValue(unused0);
         this.conflictModeButton.setValue(mode);
     }
 
@@ -166,6 +184,31 @@ public abstract class JigsawBlockScreenMixin extends Screen {
                 0xA0A0A0);
 
         this.priorityField.render(matrices, mouseX, mouseY, delta);
+
+        JigsawBlockScreen.drawTextWithShadow(matrices,
+                this.textRenderer,
+                IMMEDIATE_CHANCE_TEXT,
+                this.width / 2 - 53,
+                150,
+                0xA0A0A0);
+
+        this.immediateChanceField.render(matrices, mouseX, mouseY, delta);
+
+        JigsawBlockScreen.drawTextWithShadow(matrices,
+                this.textRenderer,
+                PERCENT_TEXT,
+                this.width / 2 + 39,
+                166,
+                0x707070);
+
+        JigsawBlockScreen.drawTextWithShadow(matrices,
+                this.textRenderer,
+                UNUSED_TEXT,
+                this.width / 2 + 47,
+                150,
+                0x7FA0A0A0);
+
+        this.unusedField.render(matrices, mouseX, mouseY, delta);
     }
 
     @ModifyArg(method = "init",
@@ -236,14 +279,14 @@ public abstract class JigsawBlockScreenMixin extends Screen {
                             target = "Lnet/minecraft/client/gui/screen/ingame/JigsawBlockScreen;JOINT_LABEL_TEXT:Lnet/minecraft/text/Text;")),
             at = @At(value = "FIELD",
                     target = "Lnet/minecraft/client/gui/widget/CyclingButtonWidget;visible:Z",
-                    ordinal = 0,
-                    shift = At.Shift.BEFORE))
+                    ordinal = 0))
     private boolean makeVisible(boolean value) {
         return true;
     }
 
     @ModifyOperand(method = "render",
             at = @At(value = "INVOKE",
+                    shift = At.Shift.AFTER,
                     target = "Lnet/minecraft/util/math/Direction$Axis;isVertical()Z"),
             allow = 1)
     private static boolean isVertical(boolean value) {

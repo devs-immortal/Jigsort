@@ -8,7 +8,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.StructureBlockBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.structure.Structure;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -35,14 +35,14 @@ public abstract class StructureBlockBlockEntityRendererMixin {
             int offsetY = offset.getY();
             int offsetZ = offset.getZ();
 
-            Vec3d min = Structure.transformAround(new Vec3d(customBoundingBox.getMinX(),
+            Vec3d min = StructureTemplate.transformAround(new Vec3d(customBoundingBox.getMinX(),
                             customBoundingBox.getMinY(),
                             customBoundingBox.getMinZ()),
                     structureBlock.getMirror(),
                     structureBlock.getRotation(),
                     BlockPos.ORIGIN).add(offsetX, offsetY, offsetZ);
 
-            Vec3d max = Structure.transformAround(new Vec3d(customBoundingBox.getMaxX() + 1.0,
+            Vec3d max = StructureTemplate.transformAround(new Vec3d(customBoundingBox.getMaxX() + 1.0,
                             customBoundingBox.getMaxY() + 1.0,
                             customBoundingBox.getMaxZ() + 1.0),
                     structureBlock.getMirror(),

@@ -1,8 +1,8 @@
 package net.immortaldevs.jigsort.mixin;
 
-import net.immortaldevs.jigsort.impl.JigsortStructure;
+import net.immortaldevs.jigsort.impl.JigsortStructureTemplate;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.structure.Structure;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.math.BlockBox;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
-@Mixin(Structure.class)
-public abstract class StructureMixin implements JigsortStructure {
+@Mixin(StructureTemplate.class)
+public abstract class StructureTemplateMixin implements JigsortStructureTemplate {
     @Unique
     private @Nullable BlockBox customBoundingBox = null;
 

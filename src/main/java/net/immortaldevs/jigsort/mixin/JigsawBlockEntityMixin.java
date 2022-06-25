@@ -12,28 +12,38 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(JigsawBlockEntity.class)
 public abstract class JigsawBlockEntityMixin implements JigsortJigsawBlockEntity {
     @Unique
+    private int priority = 0;
+
+    @Unique
     private int immediateChance = 0;
 
     @Unique
     private ConflictMode conflictMode = ConflictMode.DEFAULT;
 
-    @Unique
-    private int priority = 0;
-
     @Inject(method = "writeNbt",
             at = @At("TAIL"))
     private void writeNbt(NbtCompound nbt, CallbackInfo ci) {
+        nbt.putInt("priority", this.priority);
         nbt.putInt("immediate_chance", this.immediateChance);
         nbt.putString("conflict_mode", this.conflictMode.asString());
-        nbt.putInt("priority", this.priority);
     }
 
     @Inject(method = "readNbt",
             at = @At("TAIL"))
     private void readNbt(NbtCompound nbt, CallbackInfo ci) {
+        this.priority = nbt.getInt("priority");
         this.immediateChance = nbt.getInt("immediate_chance");
         this.conflictMode = ConflictMode.byName(nbt.getString("conflict_mode"));
-        this.priority = nbt.getInt("priority");
+    }
+
+    @Override
+    public int getPriority() {
+        return this.priority;
+    }
+
+    @Override
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     @Override
@@ -54,15 +64,5 @@ public abstract class JigsawBlockEntityMixin implements JigsortJigsawBlockEntity
     @Override
     public void setConflictMode(ConflictMode mode) {
         this.conflictMode = mode;
-    }
-
-    @Override
-    public int getPriority() {
-        return this.priority;
-    }
-
-    @Override
-    public void setPriority(int priority) {
-        this.priority = priority;
     }
 }

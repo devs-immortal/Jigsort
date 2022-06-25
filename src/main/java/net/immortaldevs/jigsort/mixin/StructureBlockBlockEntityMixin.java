@@ -1,10 +1,10 @@
 package net.immortaldevs.jigsort.mixin;
 
-import net.immortaldevs.jigsort.impl.JigsortStructure;
+import net.immortaldevs.jigsort.impl.JigsortStructureTemplate;
 import net.immortaldevs.jigsort.impl.JigsortStructureBlockBlockEntity;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.structure.Structure;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.math.BlockBox;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -56,10 +56,10 @@ public abstract class StructureBlockBlockEntityMixin implements JigsortStructure
 
     @ModifyVariable(method = "saveStructure(Z)Z",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/structure/Structure;setAuthor(Ljava/lang/String;)V"),
+                    target = "Lnet/minecraft/structure/StructureTemplate;setAuthor(Ljava/lang/String;)V"),
             index = 5)
-    private Structure saveStructure(Structure structure) {
-        ((JigsortStructure) structure).setCustomBoundingBox(this.customBoundingBox);
+    private StructureTemplate saveStructure(StructureTemplate structure) {
+        ((JigsortStructureTemplate) structure).setCustomBoundingBox(this.customBoundingBox);
         return structure;
     }
 

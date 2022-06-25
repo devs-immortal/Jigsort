@@ -24,9 +24,11 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fapi_version}"
-    modImplementation "com.github.devs-immortal:Divine-Intervention:${project.divine_intervention_version}"
 
+    modImplementation "com.github.devs-immortal:Divine-Intervention:${project.divine_intervention_version}"
     annotationProcessor "com.github.devs-immortal:Divine-Intervention:${project.divine_intervention_version}"
+//    modImplementation "net.immortaldevs:Divine-Intervention:${project.divine_intervention_version}"
+//    annotationProcessor "net.immortaldevs:Divine-Intervention:${project.divine_intervention_version}"
 }
 
 processResources {
@@ -45,7 +47,7 @@ loom {
     splitEnvironmentSourceSets()
 
     mods {
-        projection {
+        jigsort {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }

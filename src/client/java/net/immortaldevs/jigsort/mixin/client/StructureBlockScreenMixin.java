@@ -14,7 +14,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.UpdateStructureBlockC2SPacket;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.math.BlockBox;
 import org.objectweb.asm.Opcodes;
@@ -49,22 +48,22 @@ public abstract class StructureBlockScreenMixin extends Screen {
     private ButtonWidget buttonRotate270;
 
     @Unique
-    private static final Text BB_MIN_X_TEXT = new TranslatableText("structure_block.custom_bounding_box.min_x");
+    private static final Text BB_MIN_X_TEXT = Text.translatable("structure_block.custom_bounding_box.min_x");
 
     @Unique
-    private static final Text BB_MIN_Y_TEXT = new TranslatableText("structure_block.custom_bounding_box.min_y");
+    private static final Text BB_MIN_Y_TEXT = Text.translatable("structure_block.custom_bounding_box.min_y");
 
     @Unique
-    private static final Text BB_MIN_Z_TEXT = new TranslatableText("structure_block.custom_bounding_box.min_z");
+    private static final Text BB_MIN_Z_TEXT = Text.translatable("structure_block.custom_bounding_box.min_z");
 
     @Unique
-    private static final Text BB_SIZE_X_TEXT = new TranslatableText("structure_block.custom_bounding_box.size_x");
+    private static final Text BB_SIZE_X_TEXT = Text.translatable("structure_block.custom_bounding_box.size_x");
 
     @Unique
-    private static final Text BB_SIZE_Y_TEXT = new TranslatableText("structure_block.custom_bounding_box.size_y");
+    private static final Text BB_SIZE_Y_TEXT = Text.translatable("structure_block.custom_bounding_box.size_y");
 
     @Unique
-    private static final Text BB_SIZE_Z_TEXT = new TranslatableText("structure_block.custom_bounding_box.size_z");
+    private static final Text BB_SIZE_Z_TEXT = Text.translatable("structure_block.custom_bounding_box.size_z");
 
     @Unique
     private TextFieldWidget inputBoundingBoxMinX;
@@ -221,8 +220,7 @@ public abstract class StructureBlockScreenMixin extends Screen {
 
     @ModifyOperand(method = "updateStructureBlock",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
-                    shift = At.Shift.BEFORE))
+                    target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"))
     private UpdateStructureBlockC2SPacket updateStructureBlock(UpdateStructureBlockC2SPacket packet) {
         try {
             int minX = parseInt(this.inputBoundingBoxMinX.getText());

@@ -11,6 +11,18 @@ public final class Jigsort implements ModInitializer {
     @Override
     public void onInitialize() {
         Registry.register(Registry.STRUCTURE_POOL_ELEMENT,
+                id("bounded_pool_element"),
+                JigsortStructurePoolElementTypes.BOUNDED_POOL_ELEMENT);
+
+        Registry.register(Registry.STRUCTURE_POOL_ELEMENT,
+                id("box_pool_element"),
+                JigsortStructurePoolElementTypes.BOX_POOL_ELEMENT);
+
+        Registry.register(Registry.STRUCTURE_POOL_ELEMENT,
+                id("connecting_pool_element"),
+                JigsortStructurePoolElementTypes.CONNECTING_POOL_ELEMENT);
+
+        Registry.register(Registry.STRUCTURE_POOL_ELEMENT,
                 id("prioritised_pool_element"),
                 JigsortStructurePoolElementTypes.PRIORITISED_POOL_ELEMENT);
     }

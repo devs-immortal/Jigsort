@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockBox;
 
 import javax.annotation.Nullable;
 
-public interface JigsortStructure {
+public interface JigsortStructureTemplate {
     @Nullable BlockBox getCustomBoundingBox();
 
     void setCustomBoundingBox(@Nullable BlockBox boundingBox);

@@ -9,7 +9,7 @@
     "ServerPlayNetworkHandlerMixin",
     "SinglePoolElementMixin",
     "StructureBlockBlockEntityMixin",
-    "StructureMixin",
+    "StructureTemplateMixin",
     "StructurePoolElementMixin",
     "StructurePoolGeneratorMixin",
     "StructurePoolMixin",

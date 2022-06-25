@@ -1,12 +1,15 @@
 package net.immortaldevs.jigsort.impl;
 
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.StringIdentifiable;
 
 import java.util.Locale;
 
 public interface JigsortJigsawBlockEntity {
+    int getPriority();
+
+    void setPriority(int priority);
+
     int getImmediateChance();
 
     void setImmediateChance(int chance);
@@ -14,10 +17,6 @@ public interface JigsortJigsawBlockEntity {
     ConflictMode getConflictMode();
 
     void setConflictMode(ConflictMode mode);
-
-    int getPriority();
-
-    void setPriority(int priority);
 
     enum ConflictMode implements StringIdentifiable {
         DEFAULT(true, true),
@@ -35,7 +34,7 @@ public interface JigsortJigsawBlockEntity {
         }
 
         public Text asText() {
-            return new TranslatableText("jigsaw_block.conflict_mode." + this.name);
+            return Text.translatable("jigsaw_block.conflict_mode." + this.name);
         }
 
         @Override
