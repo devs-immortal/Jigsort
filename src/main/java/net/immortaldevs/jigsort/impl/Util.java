@@ -4,6 +4,7 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
+import org.jetbrains.annotations.Contract;
 
 import javax.annotation.Nullable;
 
@@ -18,7 +19,8 @@ public final class Util {
     }
 
     @SuppressWarnings("deprecation") //BlockBox::move is unsafe
-    public static BlockBox transformBox(@Nullable BlockBox box, Vec3i translation, BlockRotation rotation) {
+    @Contract("null, _, _ -> null; !null, _, _ -> !null")
+    public static @Nullable BlockBox transformBox(@Nullable BlockBox box, Vec3i translation, BlockRotation rotation) {
         return box == null ? null : switch (rotation) {
             default -> box.offset(translation.getX(), translation.getY(), translation.getZ());
             case CLOCKWISE_90 -> new BlockBox(-box.getMaxZ(),

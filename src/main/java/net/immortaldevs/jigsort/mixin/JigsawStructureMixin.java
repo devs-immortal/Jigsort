@@ -8,7 +8,8 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(JigsawStructure.class)
 public abstract class JigsawStructureMixin {
     @ModifyConstant(method = "method_41662",
-            constant = @Constant(intValue = 7))
+            constant = @Constant(intValue = 7),
+            remap = false)
     private static int adjustMaxSize(int constant) {
         return 65535;
     }

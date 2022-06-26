@@ -72,11 +72,9 @@ public abstract class StructurePoolGeneratorMixin {
     @ModifyOperand(method = "generatePiece",
             slice = @Slice(
                     from = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/util/math/BlockBox;encompass(Lnet/minecraft/util/math/BlockPos;)" +
-                                    "Lnet/minecraft/util/math/BlockBox;")),
+                            target = "Lnet/minecraft/util/math/BlockBox;encompass(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/math/BlockBox;")),
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/util/math/Box;from(Lnet/minecraft/util/math/BlockBox;)" +
-                            "Lnet/minecraft/util/math/Box;",
+                    target = "Lnet/minecraft/util/math/Box;from(Lnet/minecraft/util/math/BlockBox;)Lnet/minecraft/util/math/Box;",
                     ordinal = 0),
             locals = {30, 32, 39, 47},
             allow = 1)
@@ -92,13 +90,11 @@ public abstract class StructurePoolGeneratorMixin {
     @ModifyOperand(method = "generatePiece",
             slice = @Slice(
                     from = @At(value = "FIELD",
-                            target = "Lnet/minecraft/util/function/BooleanBiFunction;" +
-                                    "ONLY_SECOND:Lnet/minecraft/util/function/BooleanBiFunction;")),
+                            target = "Lnet/minecraft/util/function/BooleanBiFunction;ONLY_SECOND:Lnet/minecraft/util/function/BooleanBiFunction;")),
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/util/math/Box;from(Lnet/minecraft/util/math/BlockBox;)" +
-                            "Lnet/minecraft/util/math/Box;",
+                    target = "Lnet/minecraft/util/math/Box;from(Lnet/minecraft/util/math/BlockBox;)Lnet/minecraft/util/math/Box;",
                     ordinal = 0),
-            locals = {16, 30, 32, 37, 39, 46})
+            locals = {16, 30, 32, 37, 39, 47})
     private BlockBox combineBounds(BlockBox box,
                                    StructureBlockInfo self,
                                    StructurePoolElement element,
