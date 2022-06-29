@@ -1,16 +1,17 @@
 package net.immortaldevs.jigsort.mixin;
 
+import net.immortaldevs.divineintervention.injection.ModifyOperand;
 import net.immortaldevs.jigsort.impl.JigsortStructureTemplate;
 import net.immortaldevs.jigsort.impl.JigsortStructureBlockBlockEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.math.BlockBox;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -23,6 +24,9 @@ public abstract class StructureBlockBlockEntityMixin implements JigsortStructure
     @Unique
     private @Nullable BlockBox customBoundingBox = null;
 
+    @Unique
+    private boolean invertVoids = false;
+
     @Inject(method = "writeNbt",
             at = @At("TAIL"))
     private void writeNbt(NbtCompound nbt, CallbackInfo ci) {
@@ -33,6 +37,8 @@ public abstract class StructureBlockBlockEntityMixin implements JigsortStructure
                 this.customBoundingBox.getMaxX(),
                 this.customBoundingBox.getMaxY(),
                 this.customBoundingBox.getMaxZ()});
+
+        nbt.putBoolean("invertVoids", this.invertVoids);
     }
 
     @Inject(method = "readNbt",
@@ -46,6 +52,8 @@ public abstract class StructureBlockBlockEntityMixin implements JigsortStructure
                 clamp(customBoundingBox[3], -48, 48),
                 clamp(customBoundingBox[4], -48, 48),
                 clamp(customBoundingBox[5], -48, 48));
+
+        this.invertVoids = nbt.getBoolean("invertVoids");
     }
 
     @Inject(method = "detectStructureSize",
@@ -63,6 +71,15 @@ public abstract class StructureBlockBlockEntityMixin implements JigsortStructure
         return structure;
     }
 
+    @ModifyOperand(method = "saveStructure(Z)Z",
+            at = @At(value = "FIELD",
+                    shift = At.Shift.AFTER,
+                    target = "Lnet/minecraft/block/Blocks;STRUCTURE_VOID:Lnet/minecraft/block/Block;"),
+            allow = 1)
+    private Block invertVoids(Block block) {
+        return this.invertVoids ? Blocks.AIR : block;
+    }
+
     @Override
     public @Nullable BlockBox getCustomBoundingBox() {
         return this.customBoundingBox;
@@ -71,5 +88,15 @@ public abstract class StructureBlockBlockEntityMixin implements JigsortStructure
     @Override
     public void setCustomBoundingBox(@Nullable BlockBox boundingBox) {
         this.customBoundingBox = boundingBox;
+    }
+
+    @Override
+    public boolean getInvertVoids() {
+        return this.invertVoids;
+    }
+
+    @Override
+    public void setInvertVoids(boolean invert) {
+        this.invertVoids = invert;
     }
 }

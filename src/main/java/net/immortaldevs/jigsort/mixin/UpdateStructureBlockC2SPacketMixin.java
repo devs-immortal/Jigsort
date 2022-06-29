@@ -19,6 +19,9 @@ public abstract class UpdateStructureBlockC2SPacketMixin implements JigsortUpdat
     @Unique
     private @Nullable BlockBox customBoundingBox;
 
+    @Unique
+    private boolean invertVoids;
+
     @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V",
             at = @At("TAIL"))
     private void init(PacketByteBuf buf, CallbackInfo ci) {
@@ -30,6 +33,7 @@ public abstract class UpdateStructureBlockC2SPacketMixin implements JigsortUpdat
                 clamp(buf.readByte(), -48, 48),
                 clamp(buf.readByte(), -48, 48));
         else this.customBoundingBox = null;
+        this.invertVoids = buf.readBoolean();
     }
 
     @Inject(method = "write",
@@ -44,6 +48,7 @@ public abstract class UpdateStructureBlockC2SPacketMixin implements JigsortUpdat
             buf.writeByte(this.customBoundingBox.getMaxY());
             buf.writeByte(this.customBoundingBox.getMaxZ());
         } else buf.writeBoolean(false);
+        buf.writeBoolean(this.invertVoids);
     }
 
     @Override
@@ -54,5 +59,15 @@ public abstract class UpdateStructureBlockC2SPacketMixin implements JigsortUpdat
     @Override
     public void setCustomBoundingBox(@Nullable BlockBox boundingBox) {
         this.customBoundingBox = boundingBox;
+    }
+
+    @Override
+    public boolean getInvertVoids() {
+        return this.invertVoids;
+    }
+
+    @Override
+    public void setInvertVoids(boolean invert) {
+        this.invertVoids = invert;
     }
 }

@@ -66,6 +66,9 @@ public abstract class StructureBlockScreenMixin extends Screen {
     private static final Text BB_SIZE_Z_TEXT = Text.translatable("structure_block.custom_bounding_box.size_z");
 
     @Unique
+    private static final Text INVERT_VOIDS_TEXT = Text.translatable("structure_block.invert_voids");
+
+    @Unique
     private TextFieldWidget inputBoundingBoxMinX;
 
     @Unique
@@ -82,6 +85,9 @@ public abstract class StructureBlockScreenMixin extends Screen {
 
     @Unique
     private TextFieldWidget inputBoundingBoxSizeZ;
+
+    @Unique
+    private CyclingButtonWidget<Boolean> invertVoids;
 
     private StructureBlockScreenMixin(Text title) {
         super(title);
@@ -169,6 +175,12 @@ public abstract class StructureBlockScreenMixin extends Screen {
         this.inputBoundingBoxSizeZ.setText("~");
         this.addSelectableChild(this.inputBoundingBoxSizeZ);
 
+        this.invertVoids = this.addDrawableChild(CyclingButtonWidget.onOffBuilder(
+                        ((JigsortStructureBlockBlockEntity) this.structureBlock).getInvertVoids())
+                .omitKeyText()
+                .build(this.width / 2 + 8, 160, 50, 20, INVERT_VOIDS_TEXT, (button, invert) ->
+                        ((JigsortStructureBlockBlockEntity) this.structureBlock).setInvertVoids(invert)));
+
         BlockBox box = ((JigsortStructureBlockBlockEntity) this.structureBlock).getCustomBoundingBox();
         if (box != null) {
             this.inputBoundingBoxMinX.setText(String.valueOf(box.getMinX()));
@@ -190,6 +202,7 @@ public abstract class StructureBlockScreenMixin extends Screen {
         String sizeXText = this.inputBoundingBoxSizeX.getText();
         String sizeYText = this.inputBoundingBoxSizeY.getText();
         String sizeZText = this.inputBoundingBoxSizeZ.getText();
+        boolean invertVoids = this.invertVoids.getValue();
         instance.init(client, width, height);
         this.inputBoundingBoxMinX.setText(minXText);
         this.inputBoundingBoxMinY.setText(minYText);
@@ -197,6 +210,7 @@ public abstract class StructureBlockScreenMixin extends Screen {
         this.inputBoundingBoxSizeX.setText(sizeXText);
         this.inputBoundingBoxSizeY.setText(sizeYText);
         this.inputBoundingBoxSizeZ.setText(sizeZText);
+        this.invertVoids.setValue(invertVoids);
     }
 
     @Inject(method = "updateWidgets",
@@ -209,6 +223,7 @@ public abstract class StructureBlockScreenMixin extends Screen {
         this.inputBoundingBoxSizeX.setVisible(visible);
         this.inputBoundingBoxSizeY.setVisible(visible);
         this.inputBoundingBoxSizeZ.setVisible(visible);
+        this.invertVoids.visible = visible;
         if (visible) {
             this.buttonMirror.visible = true;
             this.buttonRotate0.visible = true;
@@ -238,6 +253,7 @@ public abstract class StructureBlockScreenMixin extends Screen {
             ((JigsortUpdateStructureBlockC2SPacket) packet).setCustomBoundingBox(null);
         }
 
+        ((JigsortUpdateStructureBlockC2SPacket) packet).setInvertVoids(this.invertVoids.getValue());
         return packet;
     }
 
@@ -252,6 +268,12 @@ public abstract class StructureBlockScreenMixin extends Screen {
         this.inputBoundingBoxSizeX.render(matrices, mouseX, mouseY, delta);
         this.inputBoundingBoxSizeY.render(matrices, mouseX, mouseY, delta);
         this.inputBoundingBoxSizeZ.render(matrices, mouseX, mouseY, delta);
+        drawTextWithShadow(matrices,
+                this.textRenderer,
+                INVERT_VOIDS_TEXT,
+                this.width / 2 + 58 - this.textRenderer.getWidth(INVERT_VOIDS_TEXT),
+                150,
+                0xa0a0a0);
     }
 
     @ModifyConstant(method = "init",

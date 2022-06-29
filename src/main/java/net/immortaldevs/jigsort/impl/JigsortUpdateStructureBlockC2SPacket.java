@@ -8,4 +8,8 @@ public interface JigsortUpdateStructureBlockC2SPacket {
     @Nullable BlockBox getCustomBoundingBox();
 
     void setCustomBoundingBox(@Nullable BlockBox boundingBox);
+
+    boolean getInvertVoids();
+
+    void setInvertVoids(boolean invert);
 }

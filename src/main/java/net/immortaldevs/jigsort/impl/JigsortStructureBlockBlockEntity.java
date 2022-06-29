@@ -8,4 +8,8 @@ public interface JigsortStructureBlockBlockEntity {
     @Nullable BlockBox getCustomBoundingBox();
 
     void setCustomBoundingBox(@Nullable BlockBox size);
+
+    boolean getInvertVoids();
+
+    void setInvertVoids(boolean invert);
 }

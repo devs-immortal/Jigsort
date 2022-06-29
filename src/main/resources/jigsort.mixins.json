@@ -14,6 +14,7 @@
     "StructurePoolGeneratorMixin",
     "StructurePoolMixin",
     "StructureTemplateMixin",
+    "StructureVoidBlockMixin",
     "UpdateJigsawC2SPacketMixin",
     "UpdateStructureBlockC2SPacketMixin"
   ],

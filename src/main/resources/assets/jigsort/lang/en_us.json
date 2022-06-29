@@ -6,5 +6,12 @@
   "jigsaw_block.conflict_mode.quick": "Quick",
   "jigsaw_block.immediate_chance": "Immediate:",
   "jigsaw_block.jigsort_joint_label": "Joint",
-  "jigsaw_block.priority": "Priority:"
+  "jigsaw_block.priority": "Priority:",
+  "structure_block.custom_bounding_box.min_x": "custom bounding box relative position x",
+  "structure_block.custom_bounding_box.min_y": "custom bounding box relative position y",
+  "structure_block.custom_bounding_box.min_z": "custom bounding box relative position z",
+  "structure_block.custom_bounding_box.size_x": "custom bounding box size x",
+  "structure_block.custom_bounding_box.size_y": "custom bounding box size y",
+  "structure_block.custom_bounding_box.size_z": "custom bounding box size z",
+  "structure_block.invert_voids": "Invert voids:"
 }

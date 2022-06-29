@@ -20,8 +20,11 @@ public abstract class ServerPlayNetworkHandlerMixin {
                     target = "Lnet/minecraft/block/entity/StructureBlockBlockEntity;hasStructureName()Z"))
     private static StructureBlockBlockEntity onUpdateStructureBlock(StructureBlockBlockEntity structureBlock,
                                                                     UpdateStructureBlockC2SPacket packet) {
-        ((JigsortStructureBlockBlockEntity) structureBlock).setCustomBoundingBox(
-                ((JigsortUpdateStructureBlockC2SPacket) packet).getCustomBoundingBox());
+        JigsortStructureBlockBlockEntity jigsortStructureBlock = (JigsortStructureBlockBlockEntity) structureBlock;
+        JigsortUpdateStructureBlockC2SPacket jigsortPacket = (JigsortUpdateStructureBlockC2SPacket) packet;
+
+        jigsortStructureBlock.setCustomBoundingBox(jigsortPacket.getCustomBoundingBox());
+        jigsortStructureBlock.setInvertVoids(((JigsortUpdateStructureBlockC2SPacket) packet).getInvertVoids());
         return structureBlock;
     }
 

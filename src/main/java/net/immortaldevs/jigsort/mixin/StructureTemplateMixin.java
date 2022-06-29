@@ -1,6 +1,8 @@
 package net.immortaldevs.jigsort.mixin;
 
 import net.immortaldevs.jigsort.impl.JigsortStructureTemplate;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.math.BlockBox;
@@ -8,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -44,6 +47,15 @@ public abstract class StructureTemplateMixin implements JigsortStructureTemplate
                         conflictSize[4],
                         conflictSize[5])
                 : null;
+    }
+
+    @ModifyVariable(method = "saveFromWorld",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;getBlockEntity(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/entity/BlockEntity;"),
+            index = 15,
+            allow = 1)
+    private BlockState replaceStructureVoids(BlockState value) {
+        return value.isOf(Blocks.STRUCTURE_VOID) ? Blocks.AIR.getDefaultState() : value;
     }
 
     @Override
