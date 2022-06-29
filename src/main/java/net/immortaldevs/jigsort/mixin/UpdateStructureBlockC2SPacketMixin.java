@@ -22,13 +22,14 @@ public abstract class UpdateStructureBlockC2SPacketMixin implements JigsortUpdat
     @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V",
             at = @At("TAIL"))
     private void init(PacketByteBuf buf, CallbackInfo ci) {
-        if (buf.readBoolean()) this.customBoundingBox = null;
-        else this.customBoundingBox = new BlockBox(clamp(buf.readByte(), -48, 48),
+        if (buf.readBoolean()) this.customBoundingBox = new BlockBox(
+                clamp(buf.readByte(), -48, 48),
                 clamp(buf.readByte(), -48, 48),
                 clamp(buf.readByte(), -48, 48),
                 clamp(buf.readByte(), -48, 48),
                 clamp(buf.readByte(), -48, 48),
                 clamp(buf.readByte(), -48, 48));
+        else this.customBoundingBox = null;
     }
 
     @Inject(method = "write",
