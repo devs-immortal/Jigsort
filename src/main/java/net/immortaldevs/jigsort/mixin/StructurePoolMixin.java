@@ -16,8 +16,7 @@ public abstract class StructurePoolMixin {
     @ModifyOperand(method = "getElementIndicesInRandomOrder",
             at = @At(value = "INVOKE",
                     shift = At.Shift.AFTER,
-                    target = "Lnet/minecraft/util/Util;copyShuffled(Lit/unimi/dsi/fastutil/objects/ObjectArrayList;Lnet/minecraft/util/math/random/Random;)Ljava/util/List;",
-                    remap = false),
+                    target = "Lnet/minecraft/util/Util;copyShuffled(Lit/unimi/dsi/fastutil/objects/ObjectArrayList;Lnet/minecraft/util/math/random/Random;)Ljava/util/List;"),
             allow = 1)
     private static List<StructurePoolElement> sort(List<StructurePoolElement> elements) {
         elements.sort(Comparator.comparingInt(JigsortStructurePoolElement::getPriority));
