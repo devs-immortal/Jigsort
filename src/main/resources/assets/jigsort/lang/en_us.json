@@ -4,6 +4,7 @@
   "jigsaw_block.conflict_mode.force": "Force",
   "jigsaw_block.conflict_mode.ghost": "Ghost",
   "jigsaw_block.conflict_mode.quick": "Quick",
+  "jigsaw_block.cost": "Cost:",
   "jigsaw_block.immediate_chance": "Immediate:",
   "jigsaw_block.jigsort_joint_label": "Joint",
   "jigsaw_block.priority": "Priority:",

@@ -14,19 +14,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(UpdateJigsawC2SPacket.class)
 public abstract class UpdateJigsawC2SPacketMixin implements JigsortUpdateJigsawC2SPacket {
     @Unique
+    private int priority;
+
+    @Unique
     private int immediateChance;
 
     @Unique
-    private ConflictMode conflictMode;
+    private int cost;
 
     @Unique
-    private int priority;
+    private ConflictMode conflictMode;
 
     @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V",
             at = @At("TAIL"))
     private void init(PacketByteBuf buf, CallbackInfo ci) {
         this.priority = buf.readInt();
         this.immediateChance = MathHelper.clamp(buf.readByte(), 0, 100);
+        this.cost = buf.readInt();
         this.conflictMode = buf.readEnumConstant(ConflictMode.class);
     }
 
@@ -35,6 +39,7 @@ public abstract class UpdateJigsawC2SPacketMixin implements JigsortUpdateJigsawC
     private void write(PacketByteBuf buf, CallbackInfo ci) {
         buf.writeInt(this.priority);
         buf.writeByte(this.immediateChance);
+        buf.writeInt(this.cost);
         buf.writeEnumConstant(this.conflictMode);
     }
 
@@ -56,6 +61,16 @@ public abstract class UpdateJigsawC2SPacketMixin implements JigsortUpdateJigsawC
     @Override
     public void setImmediateChance(int chance) {
         this.immediateChance = MathHelper.clamp(chance, 0, 100);
+    }
+
+    @Override
+    public int getCost() {
+        return this.cost;
+    }
+
+    @Override
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 
     @Override

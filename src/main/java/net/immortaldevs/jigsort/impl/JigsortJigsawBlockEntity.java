@@ -14,6 +14,10 @@ public interface JigsortJigsawBlockEntity {
 
     void setImmediateChance(int chance);
 
+    int getCost();
+
+    void setCost(int cost);
+
     ConflictMode getConflictMode();
 
     void setConflictMode(ConflictMode mode);

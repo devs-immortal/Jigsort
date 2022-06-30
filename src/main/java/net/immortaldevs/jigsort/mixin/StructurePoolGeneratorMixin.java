@@ -18,10 +18,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.*;
 
 import java.util.Deque;
 
@@ -44,6 +41,9 @@ public abstract class StructurePoolGeneratorMixin {
 
     @Unique
     private StructureBlockInfo info;
+
+    @Unique
+    private int budget = 0;
 
     @ModifyOperand(method = "generatePiece",
             at = @At(value = "INVOKE",
@@ -102,6 +102,8 @@ public abstract class StructurePoolGeneratorMixin {
                                    StructureBlockInfo other,
                                    BlockPos pos,
                                    int q) {
+        this.budget -= self.nbt.getInt("cost") + other.nbt.getInt("cost");
+
         if (ConflictMode.byName(self.nbt.getString("conflict_mode")).combine
                 && ConflictMode.byName(other.nbt.getString("conflict_mode")).combine) {
             BlockBox customBox = element.getCustomBoundingBox(this.structureTemplateManager, pos, rotation);
@@ -136,5 +138,16 @@ public abstract class StructurePoolGeneratorMixin {
                 piece.getRotation());
 
         return box == null ? value : box;
+    }
+
+    @ModifyOperand(method = "generatePiece",
+            at = @At(value = "INVOKE",
+                    shift = At.Shift.AFTER,
+                    target = "Lnet/minecraft/block/JigsawBlock;attachmentMatches(Lnet/minecraft/structure/StructureTemplate$StructureBlockInfo;Lnet/minecraft/structure/StructureTemplate$StructureBlockInfo;)Z"),
+            locals = {16, 37},
+            allow = 1)
+    private boolean attachmentMatches(boolean matches, StructureBlockInfo self, StructureBlockInfo other) {
+        if (!matches) return false;
+        return self.nbt.getInt("cost") + other.nbt.getInt("cost") <= this.budget;
     }
 }

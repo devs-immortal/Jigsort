@@ -37,6 +37,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
         jigsortJigsaw.setPriority(jigsortPacket.getPriority());
         jigsortJigsaw.setImmediateChance(jigsortPacket.getImmediateChance());
+        jigsortJigsaw.setCost(jigsortPacket.getCost());
         jigsortJigsaw.setConflictMode(jigsortPacket.getConflictMode());
         return jigsaw;
     }

@@ -41,10 +41,13 @@ public abstract class JigsawBlockScreenMixin extends Screen {
     private static final Text PERCENT_TEXT = Text.literal("%");
 
     @Unique
-    private static final Text UNUSED_TEXT = Text.literal("WIP");
+    private static final Text COST_TEXT = Text.translatable("jigsaw_block.cost");
 
     @Unique
     private static final Text CONFLICT_MODE_TEXT = Text.translatable("jigsaw_block.conflict_mode");
+
+    @Unique
+    private static final Text UNUSED_TEXT = Text.literal("WIP");
 
     @Unique
     private TextFieldWidget priorityField;
@@ -53,7 +56,7 @@ public abstract class JigsawBlockScreenMixin extends Screen {
     private TextFieldWidget immediateChanceField;
 
     @Unique
-    private TextFieldWidget unusedField;
+    private TextFieldWidget costField;
 
     @Unique
     private CyclingButtonWidget<ConflictMode> conflictModeButton;
@@ -75,6 +78,8 @@ public abstract class JigsawBlockScreenMixin extends Screen {
             at = @At("TAIL"))
     private void tick(CallbackInfo ci) {
         this.priorityField.tick();
+        this.immediateChanceField.tick();
+        this.costField.tick();
     }
 
     @ModifyOperand(method = "updateServer",
@@ -84,6 +89,7 @@ public abstract class JigsawBlockScreenMixin extends Screen {
         JigsortUpdateJigsawC2SPacket jigsortPacket = ((JigsortUpdateJigsawC2SPacket) packet);
         jigsortPacket.setPriority(parseInt(this.priorityField.getText()));
         jigsortPacket.setImmediateChance(parseInt(this.immediateChanceField.getText()));
+        jigsortPacket.setCost(parseInt(this.costField.getText()));
         jigsortPacket.setConflictMode(this.conflictModeButton.getValue());
         return packet;
     }
@@ -116,14 +122,16 @@ public abstract class JigsawBlockScreenMixin extends Screen {
         this.immediateChanceField.setChangedListener(text -> this.updateDoneButtonState());
         this.addSelectableChild(this.immediateChanceField);
 
-        this.unusedField = new TextFieldWidget(this.textRenderer,
+        this.costField = new TextFieldWidget(this.textRenderer,
                 this.width / 2 + 48,
                 160,
                 100,
                 20,
-                UNUSED_TEXT);
-        this.unusedField.active = false;
-        this.addSelectableChild(this.immediateChanceField);
+                COST_TEXT);
+        this.costField.setMaxLength(9);
+        this.costField.setText(String.valueOf(jigsortJigsaw.getCost()));
+        this.immediateChanceField.setChangedListener(text -> this.updateDoneButtonState());
+        this.addSelectableChild(this.costField);
 
         this.unusedButton = this.addDrawableChild(
                 CyclingButtonWidget.onOffBuilder(false)
@@ -149,6 +157,7 @@ public abstract class JigsawBlockScreenMixin extends Screen {
         try {
             Integer.parseInt(this.priorityField.getText());
             Integer.parseInt(this.immediateChanceField.getText());
+            Integer.parseInt(this.costField.getText());
             return true;
         } catch (NumberFormatException ignored) {
             return false;
@@ -161,14 +170,14 @@ public abstract class JigsawBlockScreenMixin extends Screen {
     private void init(JigsawBlockScreen instance, MinecraftClient client, int width, int height) {
         String priority = this.priorityField.getText();
         String immediateChance = this.immediateChanceField.getText();
-        String unused = this.unusedField.getText();
-        Boolean unused0 = this.unusedButton.getValue();
+        String cost = this.costField.getText();
+        Boolean unused = this.unusedButton.getValue();
         ConflictMode mode = this.conflictModeButton.getValue();
         instance.init(client, width, height);
         this.priorityField.setText(priority);
         this.immediateChanceField.setText(immediateChance);
-        this.unusedField.setText(unused);
-        this.unusedButton.setValue(unused0);
+        this.costField.setText(cost);
+        this.unusedButton.setValue(unused);
         this.conflictModeButton.setValue(mode);
     }
 
@@ -203,12 +212,12 @@ public abstract class JigsawBlockScreenMixin extends Screen {
 
         JigsawBlockScreen.drawTextWithShadow(matrices,
                 this.textRenderer,
-                UNUSED_TEXT,
+                COST_TEXT,
                 this.width / 2 + 47,
                 150,
-                0x7FA0A0A0);
+                0xA0A0A0);
 
-        this.unusedField.render(matrices, mouseX, mouseY, delta);
+        this.costField.render(matrices, mouseX, mouseY, delta);
     }
 
     @ModifyArg(method = "init",
@@ -294,7 +303,7 @@ public abstract class JigsawBlockScreenMixin extends Screen {
     }
 
     @Unique
-    private int parseInt(String string) {
+    private static int parseInt(String string) {
         try {
             return Integer.parseInt(string);
         } catch (NumberFormatException ignored) {

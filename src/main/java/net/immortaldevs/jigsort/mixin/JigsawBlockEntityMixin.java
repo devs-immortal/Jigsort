@@ -18,6 +18,9 @@ public abstract class JigsawBlockEntityMixin implements JigsortJigsawBlockEntity
     private int immediateChance = 0;
 
     @Unique
+    private int cost = 0;
+
+    @Unique
     private ConflictMode conflictMode = ConflictMode.DEFAULT;
 
     @Inject(method = "writeNbt",
@@ -25,6 +28,7 @@ public abstract class JigsawBlockEntityMixin implements JigsortJigsawBlockEntity
     private void writeNbt(NbtCompound nbt, CallbackInfo ci) {
         nbt.putInt("priority", this.priority);
         nbt.putInt("immediate_chance", this.immediateChance);
+        nbt.putInt("cost", this.cost);
         nbt.putString("conflict_mode", this.conflictMode.asString());
     }
 
@@ -33,6 +37,7 @@ public abstract class JigsawBlockEntityMixin implements JigsortJigsawBlockEntity
     private void readNbt(NbtCompound nbt, CallbackInfo ci) {
         this.priority = nbt.getInt("priority");
         this.immediateChance = nbt.getInt("immediate_chance");
+        this.cost = nbt.getInt("cost");
         this.conflictMode = ConflictMode.byName(nbt.getString("conflict_mode"));
     }
 
@@ -54,6 +59,16 @@ public abstract class JigsawBlockEntityMixin implements JigsortJigsawBlockEntity
     @Override
     public void setImmediateChance(int chance) {
         this.immediateChance = chance;
+    }
+
+    @Override
+    public int getCost() {
+        return this.cost;
+    }
+
+    @Override
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 
     @Override

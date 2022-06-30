@@ -11,7 +11,11 @@ public interface JigsortUpdateJigsawC2SPacket {
 
     void setImmediateChance(int chance);
 
+    int getCost();
+
+    void setCost(int cost);
+
     ConflictMode getConflictMode();
 
-    void setConflictMode(ConflictMode conflictMode);
+    void setConflictMode(ConflictMode mode);
 }
