@@ -147,7 +147,7 @@ public abstract class StructurePoolGeneratorMixin {
             locals = {16, 37},
             allow = 1)
     private boolean attachmentMatches(boolean matches, StructureBlockInfo self, StructureBlockInfo other) {
-        if (!matches) return false;
-        return self.nbt.getInt("cost") + other.nbt.getInt("cost") <= this.budget;
+        return matches
+                && this.random.nextInt(this.budget) >= self.nbt.getInt("cost") + other.nbt.getInt("cost");
     }
 }
